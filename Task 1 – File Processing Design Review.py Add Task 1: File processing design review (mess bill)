@@ -1,0 +1,50 @@
+def calculate_mess_bill(filename):
+    total = 0
+    rejected_lines = []
+
+    try:
+        with open(filename, "r", encoding="utf-8") as file:
+
+            for line_number, line in enumerate(file, start=1):
+                parts = line.strip().split(",")
+
+                try:
+                    if len(parts) != 3:
+                        raise ValueError("Incorrect number of fields")
+
+                    name = parts[0]
+                    room_no = parts[1]
+                    amount = int(parts[2])
+
+                    total += amount
+
+                    print(name, "-", room_no, "-", amount)
+
+                except ValueError as error:
+                    rejected_lines.append(
+                        (line_number, line.strip(), str(error))
+                    )
+
+        print("\nTotal Mess Bill:", total)
+        print("Rejected Lines:", rejected_lines)
+
+    except FileNotFoundError:
+        print("Error: File not found")
+
+    except PermissionError:
+        print("Error: Permission denied")
+
+
+# Create sample input file
+filename = "/tmp/mess.txt"
+
+data = """Arun,101,2500 Bala,102,3000 Charan,103,invalid Divya,104,2800 Ezhil,105 """
+
+try:
+    with open(filename, "w", encoding="utf-8") as file:
+        file.write(data)
+
+    calculate_mess_bill(filename)
+
+except PermissionError:
+    print("The compiler does not allow file creation.")
